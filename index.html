@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ひるメシ投票｜同票でも、11:55に必ず決まる</title>
+<meta name="description" content="2〜5人チームのランチ決めアプリ。11:55に自動で締め切り、同票なら先にその票数に届いたお店に決まります。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&amp;display=swap">
+<style>
+:root{--accent:#C2410C}
+body{margin:0;background:#FFFAF3}
+html{scroll-behavior:smooth}
+a{color:#9A3412}a:hover{color:#7C2D12}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid #FFD24D;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div style="container-type: inline-size; width: 100%; box-sizing: border-box; font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif; color: #3B1F12; background: #FFFAF3; line-height: 1.7; font-size: 16px">
+
+<!-- Header -->
+<header style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px clamp(20px, 5cqi, 64px); background: #FFE6CC; border-bottom: 1px solid #F6CFA8">
+<a href="#top" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: #3B1F12; min-height: 44px">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C2410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18a9 9 0 0 1-18 0z"></path><path d="M8 3c0 2 1 2 1 4M12 3c0 2 1 2 1 4M16 3c0 2 1 2 1 4"></path></svg>
+<span style="font-weight: 900; font-size: 18px; letter-spacing: 0.02em">ひるメシ投票</span>
+</a>
+<a href="#signup" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; background: var(--accent); color: #FFFFFF; font-weight: 700; font-size: 14px; text-decoration: none">登録する</a>
+</header>
+
+<!-- Hero -->
+<section id="top" style="background: #FFE6CC; color: #3B1F12; padding: clamp(32px, 7cqi, 88px) clamp(20px, 5cqi, 64px) clamp(40px, 7cqi, 96px)">
+<div style="max-width: 1120px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: clamp(32px, 5cqi, 64px)">
+<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; align-items: center; gap: 14px">
+<span style="width: clamp(52px, 6cqi, 64px); height: clamp(52px, 6cqi, 64px); border-radius: 16px; background: var(--accent); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 6px 16px rgba(124, 45, 18, 0.18)">
+<svg width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18a9 9 0 0 1-18 0z"></path><path d="M8 3c0 2 1 2 1 4M12 3c0 2 1 2 1 4M16 3c0 2 1 2 1 4"></path></svg>
+</span>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<span style="font-size: clamp(26px, 3.4cqi, 34px); font-weight: 900; line-height: 1.2; letter-spacing: 0.02em; color: #3B1F12">ひるメシ投票</span>
+<span style="font-size: 13px; font-weight: 700; color: #9A3412; line-height: 1.4">2〜5人チームの、ランチ決めアプリ</span>
+</div>
+</div>
+<h1 style="margin: 0; font-size: clamp(36px, 6.4cqi, 68px); line-height: 1.22; font-weight: 900; letter-spacing: -0.01em">同票でも、<br><span style="font-weight: 900; font-size: 1.45em; line-height: 1; color: var(--accent); letter-spacing: -0.02em; font-variant-numeric: tabular-nums">11:55</span>に<br>必ず決まる。</h1>
+<p style="margin: 0; font-size: clamp(16px, 1.6cqi, 18px); color: #5C3A26; max-width: 34em">候補を3件入れて、チームで投票するだけ。11:55に自動で締め切り、同票なら「先にその票数に届いたお店」に決まります。</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; padding-top: 4px">
+<a href="#signup" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 24px; border-radius: 999px; background: var(--accent); color: #FFFFFF; font-weight: 900; font-size: 16px; text-decoration: none; flex: 1 1 auto; max-width: 280px">登録して使ってみる
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+</a>
+<a href="#rule" style="display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 20px; border-radius: 999px; border: 1.5px solid #C9895C; background: #FFFAF3; color: #3B1F12; font-weight: 700; font-size: 16px; text-decoration: none">同票ルールを見る</a>
+</div>
+</div>
+
+<!-- Result card -->
+<div style="flex: 1 1 320px; max-width: 420px; min-width: 0; margin: 0 auto; width: 100%">
+<div style="border-radius: 20px; background: #FFFFFF; color: #3B1F12; box-shadow: 0 20px 48px rgba(124, 45, 18, 0.12); overflow: hidden">
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #FBE7D4">
+<span style="font-weight: 700; font-size: 15px">今日のランチ</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #7A4A2E; background: #FFF1E2; border-radius: 999px; padding: 4px 10px">締切 <span>11:55</span></span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 14px; padding: 18px 20px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-weight: 700">定食 さくら</span><span style="font-weight: 700; color: var(--accent)">2票</span></div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<span style="font-size: 12px; font-weight: 500; color: #7A4A2E; background: #FFF1E2; border-radius: 6px; padding: 2px 8px">11:38</span>
+<span style="font-size: 12px; font-weight: 700; color: #9A3412; background: #FFEDD5; border-radius: 6px; padding: 2px 8px">11:41 ← 2票目</span>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-weight: 700">麺処 たけ</span><span style="font-weight: 700; color: #6B3A1F">2票</span></div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<span style="font-size: 12px; font-weight: 500; color: #7A4A2E; background: #FFF1E2; border-radius: 6px; padding: 2px 8px">11:32</span>
+<span style="font-size: 12px; font-weight: 500; color: #7A4A2E; background: #FFF1E2; border-radius: 6px; padding: 2px 8px">11:50 ← 2票目</span>
+</div>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; color: #8A5A3E"><span style="font-weight: 700">カレー ポット</span><span style="font-weight: 700">0票</span></div>
+</div>
+<div style="background: var(--accent); color: #FFFFFF; padding: 16px 20px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; font-weight: 700; color: #FFE4CC; letter-spacing: 0.06em"><span>11:55</span> 自動決定</span>
+<span style="font-size: 22px; font-weight: 900">定食 さくら</span>
+<span style="font-size: 13px; color: #FFFFFF; line-height: 1.6">2票で同票。先に2票に届いたのは、さくら（11:41）でした。</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Problem -->
+<section style="background: #FFFAF3; padding: clamp(40px, 6cqi, 72px) clamp(20px, 5cqi, 64px)">
+<div style="max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px">
+<h2 style="margin: 0; font-size: clamp(22px, 3cqi, 30px); font-weight: 900; line-height: 1.4">ランチ、こうなっていませんか？</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<div style="flex: 1 1 220px; background: #FFF1E2; border-radius: 14px; padding: 16px 18px; display: flex; gap: 12px; align-items: flex-start">
+<span style="font-weight: 700; color: #8A5A3E; font-size: 14px; padding-top: 2px">01</span>
+<span style="font-weight: 500">Googleマップで候補を3件出す</span>
+</div>
+<div style="flex: 1 1 220px; background: #FFF1E2; border-radius: 14px; padding: 16px 18px; display: flex; gap: 12px; align-items: flex-start">
+<span style="font-weight: 700; color: #8A5A3E; font-size: 14px; padding-top: 2px">02</span>
+<span style="font-weight: 500">Slackで「どこ行く？」と聞く</span>
+</div>
+<div style="flex: 1 1 220px; background: #FFF1E2; border-radius: 14px; padding: 16px 18px; display: flex; gap: 12px; align-items: flex-start">
+<span style="font-weight: 700; color: #8A5A3E; font-size: 14px; padding-top: 2px">03</span>
+<span style="font-weight: 500">意見が割れて、昼休みが<strong style="font-weight: 900; color: var(--accent)">10分以上</strong>けずれる</span>
+</div>
+</div>
+<p style="margin: 0; font-size: clamp(16px, 1.8cqi, 19px); font-weight: 700; line-height: 1.6">Slackの投票には、締切も同票ルールもない。<br><span style="color: var(--accent); font-weight: 900">だから決まらない。</span>ひるメシ投票は、そこを決めました。</p>
+</div>
+</section>
+
+<!-- How it works -->
+<section id="how" style="background: #FFF1E2; padding: clamp(48px, 7cqi, 96px) clamp(20px, 5cqi, 64px)">
+<div style="max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<p style="margin: 0; font-size: 13px; font-weight: 700; color: #7A4A2E; letter-spacing: 0.1em">HOW IT WORKS</p>
+<h2 style="margin: 0; font-size: clamp(24px, 3.4cqi, 36px); font-weight: 900; line-height: 1.35">使い方は、3ステップ。</h2>
+</div>
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 16px">
+<li style="flex: 1 1 260px; border: 2px solid #FBD3AE; background: #FFFFFF; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<span style="font-weight: 700; font-size: 26px; line-height: 1; width: 52px; height: 52px; border-radius: 50%; background: var(--accent); color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center">1</span>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7A4A2E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>
+</div>
+<h3 style="margin: 0; font-size: 19px; font-weight: 900; line-height: 1.4">候補を3件入れる</h3>
+<p style="margin: 0; color: #5C3A26; font-size: 15px">幹事がお店の候補を3件まで登録。いつもGoogleマップで探している、あの3件でOK。</p>
+</li>
+<li style="flex: 1 1 260px; border: 2px solid #FBD3AE; background: #FFFFFF; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<span style="font-weight: 700; font-size: 26px; line-height: 1; width: 52px; height: 52px; border-radius: 50%; background: var(--accent); color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center">2</span>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7A4A2E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"></path><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"></path></svg>
+</div>
+<h3 style="margin: 0; font-size: 19px; font-weight: 900; line-height: 1.4">チームが投票</h3>
+<p style="margin: 0; color: #5C3A26; font-size: 15px">投票するたびに、その時刻が記録されて全員に表示されます。</p>
+<div style="display: flex; align-items: center; gap: 8px; background: #FFF1E2; border-radius: 10px; padding: 8px 12px; font-size: 13px">
+<span style="font-weight: 700">11:41</span>
+<span style="color: #5C3A26">Cさんが「定食 さくら」に投票</span>
+</div>
+</li>
+<li style="flex: 1 1 260px; border: 2px solid #FBD3AE; background: #FFFFFF; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<span style="font-weight: 700; font-size: 26px; line-height: 1; width: 52px; height: 52px; border-radius: 50%; background: var(--accent); color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center">3</span>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7A4A2E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 1.5M9 2h6"></path></svg>
+</div>
+<h3 style="margin: 0; font-size: 19px; font-weight: 900; line-height: 1.4"><span>11:55</span>に自動決定</h3>
+<p style="margin: 0; color: #5C3A26; font-size: 15px">締切は自動。同票でも決定ルールで、必ず1店に決まります。</p>
+</li>
+</ol>
+</div>
+</section>
+
+<!-- Tie rule -->
+<section id="rule" style="background: #FFE9D6; padding: clamp(48px, 7cqi, 96px) clamp(20px, 5cqi, 64px)">
+<div style="max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<p style="margin: 0; font-size: 13px; font-weight: 700; color: #7A4A2E; letter-spacing: 0.1em; color: #9A3412">TIE-BREAK RULE</p>
+<h2 style="margin: 0; font-size: clamp(24px, 3.4cqi, 36px); font-weight: 900; line-height: 1.35">同票なら、<br>先にその票数に届いた店が勝ち。</h2>
+<p style="margin: 0; color: #5C3A26; max-width: 40em">11:55の時点で票数が並んだら、その票数に先に到達した候補を採用します。だから、すべての投票に時刻がついています。</p>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch">
+
+<!-- Timeline -->
+<div style="flex: 1 1 380px; min-width: 0; background: #FFFFFF; border-radius: 18px; padding: clamp(18px, 3cqi, 28px); display: flex; flex-direction: column; gap: 4px">
+<p style="margin: 0 0 10px; font-size: 14px; font-weight: 700; color: #7A4A2E">例：4人チームの投票ログ</p>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 8px; border-bottom: 1px solid #FBE7D4">
+<span style="font-weight: 700; font-size: 15px; width: 44px; flex-shrink: 0">11:32</span>
+<span style="width: 28px; height: 28px; border-radius: 50%; background: #F6DCC4; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0">A</span>
+<span style="flex: 1; min-width: 0; font-size: 14px">→ 麺処 たけ</span>
+<span style="font-size: 13px; font-weight: 700; color: #6B3A1F; flex-shrink: 0">たけ 1票</span>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 8px; border-bottom: 1px solid #FBE7D4">
+<span style="font-weight: 700; font-size: 15px; width: 44px; flex-shrink: 0">11:38</span>
+<span style="width: 28px; height: 28px; border-radius: 50%; background: #F6DCC4; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0">B</span>
+<span style="flex: 1; min-width: 0; font-size: 14px">→ 定食 さくら</span>
+<span style="font-size: 13px; font-weight: 700; color: #9A3412; flex-shrink: 0">さくら 1票</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 10px 8px; background: #FFD9B8; border-radius: 10px">
+<span style="font-weight: 700; font-size: 15px; width: 44px; flex-shrink: 0; color: #9A3412">11:41</span>
+<span style="width: 28px; height: 28px; border-radius: 50%; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0">C</span>
+<span style="flex: 1; min-width: 0; font-size: 14px">→ 定食 さくら</span>
+<span style="font-size: 13px; font-weight: 900; color: #9A3412; flex-shrink: 0">さくら 2票</span>
+<span style="width: 100%; padding-left: 92px; box-sizing: border-box; font-size: 12px; font-weight: 700; color: #9A3412">★ 先に2票へ到達</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 10px 8px; border-bottom: 1px solid #FBE7D4">
+<span style="font-weight: 700; font-size: 15px; width: 44px; flex-shrink: 0">11:50</span>
+<span style="width: 28px; height: 28px; border-radius: 50%; background: #F6DCC4; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0">D</span>
+<span style="flex: 1; min-width: 0; font-size: 14px">→ 麺処 たけ</span>
+<span style="font-size: 13px; font-weight: 900; color: #6B3A1F; flex-shrink: 0">たけ 2票</span>
+<span style="width: 100%; padding-left: 92px; box-sizing: border-box; font-size: 12px; font-weight: 700; color: #7A4A2E">2票へ到達（9分おそい）</span>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 12px 8px 4px">
+<span style="font-weight: 700; font-size: 15px; width: 44px; flex-shrink: 0">11:55</span>
+<span style="width: 28px; height: 28px; border-radius: 50%; background: var(--accent); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+</span>
+<span style="flex: 1; min-width: 0; font-size: 14px; font-weight: 700">締切。2票 対 2票で同票</span>
+</div>
+</div>
+
+<!-- Race + verdict -->
+<div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<div style="background: #FFFFFF; border-radius: 18px; padding: clamp(18px, 3cqi, 28px); display: flex; flex-direction: column; gap: 6px">
+<p style="margin: 0 0 8px; font-size: 14px; font-weight: 700; color: #7A4A2E">2票目が入った時刻をくらべる</p>
+
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="width: 76px; flex-shrink: 0; font-size: 14px; font-weight: 700; color: #9A3412">定食 さくら</span>
+<div style="position: relative; flex: 1; height: 56px; border-right: 2px dashed #D9A77F">
+<div style="position: absolute; left: 0; right: 0; top: 37px; height: 2px; background: #F6DCC4"></div>
+<div style="position: absolute; left: 32%; width: 12%; top: 36px; height: 4px; background: var(--accent)"></div>
+<span style="position: absolute; left: calc(32% - 11px); top: 27px; width: 22px; height: 22px; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--accent); background: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #9A3412">1</span>
+<span style="position: absolute; left: calc(44% - 11px); top: 27px; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #FFFFFF">2</span>
+<span style="position: absolute; left: 44%; top: 2px; transform: translateX(-50%); font-size: 12px; font-weight: 700; color: #9A3412; white-space: nowrap">11:41</span>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="width: 76px; flex-shrink: 0; font-size: 14px; font-weight: 700; color: #6B3A1F">麺処 たけ</span>
+<div style="position: relative; flex: 1; height: 56px; border-right: 2px dashed #D9A77F">
+<div style="position: absolute; left: 0; right: 0; top: 37px; height: 2px; background: #F6DCC4"></div>
+<div style="position: absolute; left: 8%; width: 72%; top: 36px; height: 4px; background: #D6B8A3"></div>
+<span style="position: absolute; left: calc(8% - 11px); top: 27px; width: 22px; height: 22px; box-sizing: border-box; border-radius: 50%; border: 2px solid #6B3A1F; background: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #6B3A1F">1</span>
+<span style="position: absolute; left: calc(80% - 11px); top: 27px; width: 22px; height: 22px; border-radius: 50%; background: #6B3A1F; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #FFFFFF">2</span>
+<span style="position: absolute; left: 80%; top: 2px; transform: translateX(-50%); font-size: 12px; font-weight: 700; color: #6B3A1F; white-space: nowrap">11:50</span>
+</div>
+</div>
+
+<div style="display: flex; gap: 12px">
+<span style="width: 76px; flex-shrink: 0"></span>
+<div style="position: relative; flex: 1; height: 20px; font-size: 11px; color: #7A4A2E">
+<span style="position: absolute; left: 0">11:30</span>
+<span style="position: absolute; left: 40%; transform: translateX(-50%)">11:40</span>
+<span style="position: absolute; left: 80%; transform: translateX(-50%)">11:50</span>
+<span style="position: absolute; right: 0; transform: translateX(50%); font-weight: 700; color: #3B1F12">11:55</span>
+</div>
+</div>
+</div>
+
+<div style="background: var(--accent); color: #FFFFFF; border-radius: 18px; padding: clamp(20px, 3cqi, 28px); display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: #FFE4CC"><span>11:55</span> の決定</span>
+<span style="font-size: clamp(24px, 3cqi, 30px); font-weight: 900; line-height: 1.3">定食 さくら に決定</span>
+<span style="font-size: 14px; color: #FFFFFF">11:41に2票へ到達。麺処 たけ（11:50）より9分早かったから。</span>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 18px; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px; font-size: 14px">
+<span style="font-weight: 700">決め方のルール</span>
+<span style="display: flex; gap: 10px"><span style="font-weight: 700; color: #9A3412">1.</span>11:55時点で票がいちばん多い店に決定</span>
+<span style="display: flex; gap: 10px"><span style="font-weight: 700; color: #9A3412">2.</span>並んだら、その票数に先に届いた店に決定</span>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="padding: clamp(48px, 7cqi, 96px) clamp(20px, 5cqi, 64px)">
+<div style="max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px">
+<h2 style="margin: 0; font-size: clamp(24px, 3.4cqi, 36px); font-weight: 900; line-height: 1.35">よくある質問</h2>
+<div style="display: flex; flex-direction: column; border-top: 1px solid #F6DCC4">
+<details style="border-bottom: 1px solid #F6DCC4; padding: 4px 0">
+<summary style="cursor: pointer; padding: 14px 4px; font-weight: 700; min-height: 44px; box-sizing: border-box">Slackの投票機能と何がちがいますか？</summary>
+<p style="margin: 0; padding: 0 4px 16px; color: #5C3A26; font-size: 15px">締切（11:55）と、同票のときの決め方があることです。どんな票の割れ方でも、時間になれば必ず1店に決まります。</p>
+</details>
+<details style="border-bottom: 1px solid #F6DCC4; padding: 4px 0">
+<summary style="cursor: pointer; padding: 14px 4px; font-weight: 700; min-height: 44px; box-sizing: border-box">同票になったら、どうなりますか？</summary>
+<p style="margin: 0; padding: 0 4px 16px; color: #5C3A26; font-size: 15px">並んだ票数に「先に到達した」お店を採用します。たとえば2票ずつで並んだら、2票目が早く入った方に決まります。</p>
+</details>
+<details style="border-bottom: 1px solid #F6DCC4; padding: 4px 0">
+<summary style="cursor: pointer; padding: 14px 4px; font-weight: 700; min-height: 44px; box-sizing: border-box">なぜ投票の時刻が表示されるのですか？</summary>
+<p style="margin: 0; padding: 0 4px 16px; color: #5C3A26; font-size: 15px">同票のとき、どちらが先に届いたかを全員が確認できるようにするためです。結果の理由が見えるので、もめずに決まります。</p>
+</details>
+<details style="border-bottom: 1px solid #F6DCC4; padding: 4px 0">
+<summary style="cursor: pointer; padding: 14px 4px; font-weight: 700; min-height: 44px; box-sizing: border-box">何人のチームで使えますか？</summary>
+<p style="margin: 0; padding: 0 4px 16px; color: #5C3A26; font-size: 15px">2〜5人のチームを想定しています。幹事は持ち回りでも大丈夫です。</p>
+</details>
+<details style="border-bottom: 1px solid #F6DCC4; padding: 4px 0">
+<summary style="cursor: pointer; padding: 14px 4px; font-weight: 700; min-height: 44px; box-sizing: border-box">締切時刻は変えられますか？</summary>
+<p style="margin: 0; padding: 0 4px 16px; color: #5C3A26; font-size: 15px">はい、チームごとに変えられます。初期設定は11:55なので、そのままでも使えます。ランチの時間がずれるチームは、幹事が締切時刻を変更してください。</p>
+</details>
+</div>
+</div>
+</section>
+
+<!-- Signup -->
+<section id="signup" style="background: #9A3412; color: #FFFFFF; padding: clamp(48px, 7cqi, 96px) clamp(20px, 5cqi, 64px)">
+<div style="max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
+<h2 style="margin: 0; font-size: clamp(26px, 4cqi, 42px); font-weight: 900; line-height: 1.35">明日のランチは、<br><span style="color: #FFD24D">11:55</span>で決めよう。</h2>
+<p style="margin: 0; color: #FFFFFF">メールアドレスを登録して、ひるメシ投票を使ってみてください。</p>
+<form id="signup-form" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end">
+<div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 6px">
+<label for="signup-email" style="font-size: 13px; font-weight: 700; color: #FFFFFF">メールアドレス</label>
+<input id="signup-email" type="email" placeholder="name@company.co.jp" style="min-height: 52px; box-sizing: border-box; border-radius: 12px; border: 2px solid #FFFFFF; background: #FFFFFF; color: #3B1F12; padding: 0 16px; font-size: 16px; font-family: inherit; width: 100%">
+</div>
+<button type="submit" style="flex: 0 0 auto; min-height: 52px; padding: 0 28px; border-radius: 12px; border: none; background: #FFD24D; color: #4A1D0A; font-weight: 900; font-size: 16px; font-family: inherit; cursor: pointer">登録する</button>
+</form>
+</div>
+</section>
+
+<footer style="background: #7C2D12; padding: 24px clamp(20px, 5cqi, 64px); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: 13px; color: #FFE4CC">
+<span style="font-weight: 700; color: #FFFFFF">ひるメシ投票</span>
+<span>© 2026 ひるメシ投票</span>
+</footer>
+
+</div>
+<script>
+// 登録フォーム: 今回は「やらないこと」にある通り実際の登録はせず、お礼メッセージだけ表示する
+document.getElementById('signup-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var email = document.getElementById('signup-email');
+  if (!email.checkValidity() || !email.value) { email.reportValidity(); return; }
+  var msg = document.createElement('p');
+  msg.setAttribute('role', 'status');
+  msg.style.cssText = 'margin:0;font-weight:700;color:#FFD24D';
+  msg.textContent = 'ありがとうございます！リリースのご案内をお送りします。（これはデモです。実際には送信されません）';
+  this.replaceWith(msg);
+});
+</script>
+</body>
+</html>

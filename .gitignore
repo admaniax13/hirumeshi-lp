@@ -1,0 +1,10 @@
+# ワークショップの手順ページ（LPとは関係ないので公開しない）
+pm-ai-workshop.html
+
+# Claude Code の個人設定（人ごとに違うので共有しない）
+.claude/settings.local.json
+
+# OSが自動で作るファイル
+Thumbs.db
+desktop.ini
+.DS_Store

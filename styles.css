@@ -1,0 +1,121 @@
+/*
+  ひるメシ投票の共通スタイル
+  DESIGN.md のルールをそのままコードにしたものです。
+  新しい画面はここにある色・部品を使い、同じ指定を各ページに書かないようにします。
+*/
+
+/* ---------- 色・文字・角の丸み（DESIGN.md「色」「文字」「角の丸み」） ---------- */
+:root {
+  --color-main: #C2410C;        /* メイン: 押す場所と結論だけ */
+  --color-strong: #9A3412;      /* 強調 */
+  --color-heading: #3B1F12;     /* 見出しの文字 */
+  --color-body: #5C3A26;        /* 本文の文字 */
+  --color-note: #7A4A2E;        /* 補足の文字 */
+  --color-bg: #FFFAF3;          /* 背景 */
+  --color-bg-soft: #FFF1E2;     /* 背景（薄いオレンジ） */
+  --color-line: #F6DCC4;        /* 線 */
+  --color-white: #FFFFFF;
+  --color-spark: #FFD24D;       /* 差し色: 濃い背景の上だけ */
+
+  --font: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+
+  --radius-s: 6px;              /* 小: 時刻バッジ */
+  --radius-m: 12px;             /* 中: 入力欄、小さな囲み */
+  --radius-l: 18px;             /* 大: カード */
+  --radius-round: 999px;        /* 丸: ボタン */
+}
+
+/* ---------- 土台 ---------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-body);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.7;
+  font-variant-numeric: tabular-nums;
+}
+a { color: var(--color-strong); }
+a:hover { color: var(--color-heading); }
+button, input { font-family: inherit; }
+button:focus-visible, input:focus-visible, a:focus-visible {
+  outline: 3px solid var(--color-spark);
+  outline-offset: 2px;
+}
+h1, h2, h3 { margin: 0; color: var(--color-heading); font-weight: 900; line-height: 1.35; }
+p { margin: 0; }
+.note { font-size: 14px; color: var(--color-note); line-height: 1.6; }
+
+/* ---------- ボタン（DESIGN.md「部品」） ---------- */
+.btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; min-height: 52px; padding: 0 24px;
+  border-radius: var(--radius-round);
+  font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: none;
+}
+.btn-primary { border: 0; background: var(--color-main); color: var(--color-white); }
+.btn-secondary { border: 1.5px solid var(--color-note); background: var(--color-bg); color: var(--color-heading); }
+.btn-small { min-height: 44px; font-size: 15px; padding: 0 20px; }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+.text-link {
+  min-height: 44px; padding: 0 2px; border: 0; background: transparent;
+  color: var(--color-strong); font-size: 14px; font-weight: 700;
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+
+/* ---------- カード ---------- */
+.card {
+  display: flex; flex-direction: column;
+  padding: 20px 20px 8px;
+  border-radius: var(--radius-l);
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+}
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-bottom: 8px; }
+.card-head h2 { font-size: 19px; line-height: 1.4; }
+.card-head span { font-size: 14px; font-weight: 700; color: var(--color-note); }
+.row { padding: 14px 0; border-top: 1px solid var(--color-line); }
+
+/* ---------- 時刻バッジ ---------- */
+.badge-time {
+  display: inline-flex; align-items: center; flex-shrink: 0;
+  padding: 2px 8px; border-radius: var(--radius-s);
+  background: var(--color-bg-soft); color: var(--color-note);
+  font-size: 12px; font-weight: 500;
+}
+
+/* ---------- 結論の帯 ---------- */
+.result-band {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 22px 20px; border-radius: var(--radius-l);
+  background: var(--color-main); color: var(--color-white);
+}
+.result-band .label { font-size: 14px; font-weight: 700; }
+.result-band .name { font-size: 36px; line-height: 1.25; font-weight: 900; }
+
+/* ---------- 人のアイコン ---------- */
+.dot {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 50%;
+  font-size: 16px; font-weight: 700;
+}
+.dot.voted { background: var(--color-bg-soft); border: 2px solid var(--color-note); color: var(--color-heading); }
+.dot.waiting { background: transparent; border: 2px dashed var(--color-note); color: var(--color-note); }
+.avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; margin-right: -6px; border-radius: 50%;
+  background: var(--color-bg-soft); border: 2px solid var(--color-white);
+  color: var(--color-note); font-size: 13px; font-weight: 700;
+}
+
+/* ---------- ページ共通のヘッダー ---------- */
+.site-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 20px; border-bottom: 1px solid var(--color-line);
+}
+.site-header .brand { display: flex; align-items: center; gap: 8px; color: var(--color-note); text-decoration: none; }
+.site-header .brand span { font-size: 18px; font-weight: 900; color: var(--color-heading); }
+.site-header .team { font-size: 12px; font-weight: 500; color: var(--color-note); }
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

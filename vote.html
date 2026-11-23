@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>今日の投票画面（見本）｜ひるメシ投票</title>
+<meta name="description" content="ひるメシ投票の投票画面のプロトタイプです。見本データで動きます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&amp;display=swap">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* この画面だけで使うレイアウト。色や部品は styles.css を使う */
+main { max-width: 480px; margin: 0 auto; padding: 24px 20px 40px; display: flex; flex-direction: column; gap: 20px; }
+.intro { display: flex; flex-direction: column; gap: 16px; }
+.date { font-size: 14px; font-weight: 700; color: var(--color-note); }
+.intro h1 { font-size: 24px; }
+.deadline { display: flex; align-items: baseline; gap: 12px; }
+.deadline-label { font-size: 19px; font-weight: 900; color: var(--color-heading); }
+.deadline-time { font-size: 68px; line-height: 1; font-weight: 900; letter-spacing: -0.02em; color: var(--color-strong); }
+.status { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 15px; font-weight: 700; }
+.status .remain { display: inline-flex; align-items: center; gap: 6px; }
+.status .count { color: var(--color-note); }
+.editor { display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: var(--radius-m); border: 1px solid var(--color-line); background: var(--color-white); }
+.editor label { font-size: 14px; font-weight: 700; color: var(--color-note); }
+.editor-row { display: flex; gap: 10px; align-items: center; }
+.editor-row input, .editor-row select { flex: 1; min-width: 0; height: 52px; padding: 0 14px; border-radius: var(--radius-m); border: 1.5px solid var(--color-note); background: var(--color-white); color: var(--color-heading); font-size: 18px; font-weight: 700; }
+.editor-row .btn { width: auto; flex-shrink: 0; }
+.locked, .notice { display: flex; gap: 6px; align-items: flex-start; }
+.notice strong { color: var(--color-strong); }
+.notice svg { color: var(--color-strong); flex-shrink: 0; margin-top: 2px; }
+.members { list-style: none; margin: 0; padding: 14px 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); }
+.members li { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+.members .who { font-size: 12px; font-weight: 700; color: var(--color-heading); }
+.members .state { font-size: 12px; font-weight: 500; color: var(--color-note); }
+.members .state.done { font-weight: 700; color: var(--color-strong); }
+.cand { display: flex; flex-direction: column; gap: 12px; padding: 16px 0; border-top: 1px solid var(--color-line); }
+.cand.mine { border-top: 0; outline: 2px solid var(--color-strong); outline-offset: -2px; border-radius: var(--radius-m); padding: 14px 12px; margin: 0 -12px 8px; }
+.cand-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.cand-name { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cand-name .mine-label { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 700; color: var(--color-strong); }
+.cand-name .name { font-size: 19px; line-height: 1.4; font-weight: 900; color: var(--color-heading); }
+.cand-name .genre { font-size: 14px; font-weight: 500; color: var(--color-note); }
+.cand-count { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; }
+.big-num { font-size: 28px; line-height: 1.1; font-weight: 900; color: var(--color-heading); }
+.big-num small { font-size: 14px; font-weight: 700; }
+.leader { font-size: 14px; font-weight: 700; color: var(--color-strong); }
+.voters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.voters .names { margin-left: 8px; font-size: 12px; color: var(--color-note); }
+.reached { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-note); }
+.reason { padding: 14px 0 12px; border-top: 1px solid var(--color-line); }
+.reason strong { color: var(--color-strong); }
+.rank { display: flex; align-items: center; gap: 14px; }
+.rank-no { width: 40px; flex-shrink: 0; font-size: 19px; font-weight: 900; color: var(--color-heading); }
+.rank-no small { font-size: 13px; }
+.rank-body { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+.rank-body .name { font-size: 17px; font-weight: 700; color: var(--color-heading); }
+.rank-body .name.first { font-size: 19px; font-weight: 900; color: var(--color-main); }
+.log { list-style: none; margin: 0; padding: 0; }
+.log li { display: flex; align-items: flex-start; gap: 10px; }
+.log .badge-time { margin-top: 2px; }
+.log .text { display: flex; flex-direction: column; gap: 2px; }
+.log strong { color: var(--color-heading); }
+.log .sub { font-size: 12px; color: var(--color-note); }
+.proto { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; padding: 16px; border: 2px dashed var(--color-note); border-radius: var(--radius-m); }
+.proto .title { font-size: 14px; font-weight: 700; color: var(--color-note); }
+.proto .sub { font-size: 12px; color: var(--color-note); line-height: 1.5; }
+.scenes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.scenes .btn[aria-pressed="true"] { background: var(--color-bg-soft); border-color: var(--color-strong); color: var(--color-strong); }
+.back { text-align: center; font-size: 14px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18c0 4.4-4 7.5-9 7.5S3 16.4 3 12z"></path><path d="M9 21.5h6"></path><path d="M8.5 3.5c-.9 1.2.9 2.2 0 3.5"></path><path d="M12 3c-.9 1.2.9 2.2 0 3.5"></path><path d="M15.5 3.5c-.9 1.2.9 2.2 0 3.5"></path></svg>
+    <span>ひるメシ投票</span>
+  </a>
+  <span class="team" id="team-line"></span>
+</header>
+
+<main id="app" aria-live="polite"></main>
+
+<script>
+/*
+  今日の投票画面のプロトタイプ。
+  データは見本で、保存はしません（PRDの「やらないこと」）。
+  時刻は「0時からの分」で持ちます（例: 11:55 = 715）。
+*/
+(function () {
+  var MEMBERS = [
+    { id: 'me', name: '佐藤' },
+    { id: 'suzuki', name: '鈴木' },
+    { id: 'takahashi', name: '高橋' },
+    { id: 'tanaka', name: '田中' },
+    { id: 'watanabe', name: '渡辺' }
+  ];
+  var CANDS = [
+    { id: 'sakura', name: 'さくら', genre: '定食' },
+    { id: 'tsubame', name: 'つばめ軒', genre: 'ラーメン' },
+    { id: 'hinata', name: 'ひなたカレー', genre: 'カレー' }
+  ];
+  var SCENES = [
+    { id: 'before', label: '投票前' },
+    { id: 'after', label: '投票後' },
+    { id: 'closed', label: '締切後' },
+    { id: 'organizer', label: '幹事・最初の1票の前' }
+  ];
+
+  // 決定ルール（PRD）:
+  // 1. 締切時点で票がいちばん多い候補に決定
+  // 2. 同票なら、その票数に先に到達した候補が上位
+  // 3. 到達時刻は「今有効な票」だけで数える。変更した票は変更した時刻から数え直す
+  // 4. 1票も入らなかったら、幹事が事前に決めた店（fallback）に決定
+  function initial(scene) {
+    var base = [
+      { t: 692, type: 'vote', who: 'suzuki', to: 'sakura' },
+      { t: 696, type: 'vote', who: 'takahashi', to: 'tsubame' },
+      { t: 699, type: 'vote', who: 'tanaka', to: 'hinata' },
+      { t: 701, type: 'change', who: 'tanaka', from: 'hinata', to: 'sakura' }
+    ];
+    var mine = { t: 708, type: 'vote', who: 'me', to: 'tsubame' };
+    // fallback: 1票も入らなかったときに決まる店（幹事が事前に決める）
+    var s = { scene: scene, events: base, now: 707, deadline: 715, draft: '11:55', fallback: 'sakura', draftFallback: 'sakura', closed: false, editOpen: false };
+    if (scene === 'organizer') { s.events = []; s.now = 680; }
+    if (scene === 'after') { s.events = base.concat([mine]); s.now = 708; }
+    if (scene === 'closed') { s.events = base.concat([mine]); s.now = 715; s.closed = true; }
+    return s;
+  }
+
+  var state = initial('before');
+
+  function fmt(m) { return Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0'); }
+  function parse(s) {
+    var m = /^(\d{1,2}):(\d{2})$/.exec(s || '');
+    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+  }
+  function isOrganizer() { return state.scene === 'organizer'; }
+  function memberLabel(id) {
+    if (id === 'me') return isOrganizer() ? 'あなた（幹事）' : 'あなた';
+    var m = MEMBERS.filter(function (x) { return x.id === id; })[0];
+    var label = m.name + 'さん';
+    if (id === 'suzuki' && !isOrganizer()) label += '（幹事）';
+    return label;
+  }
+  function plainLabel(id) { return memberLabel(id).replace('（幹事）', ''); }
+  function candName(id) { return CANDS.filter(function (c) { return c.id === id; })[0].name; }
+
+  // 各メンバーの「今有効な票」（最後の投票か変更）
+  function lastVotes(events) {
+    var last = {};
+    events.forEach(function (e) {
+      if (e.type === 'vote' || e.type === 'change') last[e.who] = { to: e.to, t: e.t };
+    });
+    return last;
+  }
+
+  // 候補ごとの票数と到達時刻、ランキング
+  function tally() {
+    var last = lastVotes(state.events);
+    var stats = CANDS.map(function (c, i) {
+      var vs = MEMBERS.filter(function (m) { return last[m.id] && last[m.id].to === c.id; })
+        .map(function (m) { return { id: m.id, t: last[m.id].t }; })
+        .sort(function (a, b) { return a.t - b.t; });
+      return { c: c, i: i, vs: vs, count: vs.length, reached: vs.length ? vs[vs.length - 1].t : null };
+    });
+    var ranked = stats.slice().sort(function (a, b) {
+      return (b.count - a.count) || ((a.reached == null ? 9999 : a.reached) - (b.reached == null ? 9999 : b.reached)) ||
+        // 全員0票のときは、幹事が決めた店を1位にする
+        ((b.c.id === state.fallback) - (a.c.id === state.fallback)) || (a.i - b.i);
+    });
+    return { last: last, stats: stats, ranked: ranked };
+  }
+
+  // ---------- 操作 ----------
+  function pick(id) {
+    if (state.closed) return;
+    var last = lastVotes(state.events);
+    var now = state.now + 1;
+    var current = last.me ? last.me.to : null;
+    if (current === id || now > state.deadline) return;
+    state.events = state.events.concat([current
+      ? { t: now, type: 'change', who: 'me', from: current, to: id }
+      : { t: now, type: 'vote', who: 'me', to: id }]);
+    state.now = now;
+    state.editOpen = false;
+    render();
+  }
+  function nextVoter() {
+    var last = lastVotes(state.events);
+    return MEMBERS.filter(function (m) { return m.id !== 'me' && !last[m.id]; })[0] || null;
+  }
+  function nextVote() {
+    var m = nextVoter();
+    var now = state.now + 1;
+    if (state.closed || !m || now > state.deadline) return;
+    var n = state.events.filter(function (e) { return e.type === 'vote' || e.type === 'change'; }).length;
+    state.events = state.events.concat([{ t: now, type: 'vote', who: m.id, to: CANDS[n % CANDS.length].id }]);
+    state.now = now;
+    state.editOpen = false;
+    render();
+  }
+  function advance() {
+    if (state.closed) return;
+    state.now = state.deadline;
+    state.closed = true;
+    state.editOpen = false;
+    render();
+  }
+  // 締切と「票が入らなかったときの店」をまとめて保存する（最初の1票の前だけ）
+  function saveSettings() {
+    var hasVote = state.events.some(function (e) { return e.type === 'vote'; });
+    if (hasVote) return;
+    var v = parse(state.draft);
+    var added = [];
+    if (v !== null && v > state.now && v !== state.deadline) {
+      added.push({ t: state.now, type: 'deadline', from: fmt(state.deadline), to: fmt(v) });
+      state.deadline = v;
+    }
+    if (state.draftFallback !== state.fallback) {
+      added.push({ t: state.now, type: 'fallback', from: state.fallback, to: state.draftFallback });
+      state.fallback = state.draftFallback;
+    }
+    state.events = state.events.concat(added);
+    state.editOpen = false;
+    render();
+  }
+
+  // ---------- 表示 ----------
+  var ICON_CLOCK = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>';
+  var ICON_CHECK = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>';
+  var ICON_LOCK = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>';
+
+  function render() {
+    var T = tally();
+    var last = T.last, stats = T.stats, ranked = T.ranked;
+    var myVote = last.me ? last.me.to : null;
+    var closed = state.closed;
+    var lead = ranked[0], second = ranked[1];
+    var tie = lead.count > 0 && second.count === lead.count;
+    var hasVote = state.events.some(function (e) { return e.type === 'vote'; });
+    var deadline = fmt(state.deadline);
+    var h = [];
+
+    document.getElementById('team-line').textContent = isOrganizer() ? '開発チーム・5人・幹事 あなた' : '開発チーム・5人・幹事 鈴木さん';
+
+    // 見出し・締切
+    h.push('<section class="intro">');
+    h.push('<div><p class="date">11月23日（月）の投票</p><h1>' +
+      (closed ? '今日のランチが決まりました。' : (myVote ? '投票しました。' : '今日のランチに投票する。')) + '</h1></div>');
+    h.push('<div><div class="deadline"><span class="deadline-label">' + (closed ? '締切済み' : '締切') + '</span><span class="deadline-time">' + deadline + '</span></div>');
+    h.push('<div class="status"><span class="remain">' + ICON_CLOCK + (closed ? '締切済み' : 'あと' + (state.deadline - state.now) + '分') + '</span><span class="count">投票 ' + Object.keys(last).length + '/5人</span></div>');
+    if (isOrganizer() && !closed && !hasVote) {
+      h.push('<button type="button" class="text-link" data-action="toggle-edit" aria-expanded="' + state.editOpen + '" aria-controls="deadline-editor">' + (state.editOpen ? '閉じる' : '締切と、票がないときの店を変更') + '</button>');
+      if (state.editOpen) {
+        h.push('<div class="editor" id="deadline-editor"><label for="deadline-input">締切</label>' +
+          '<div class="editor-row"><input id="deadline-input" type="time" value="' + state.draft + '"></div>' +
+          '<label for="fallback-select">票が入らなかったときの店</label>' +
+          '<div class="editor-row"><select id="fallback-select">' + CANDS.map(function (c) {
+            return '<option value="' + c.id + '"' + (state.draftFallback === c.id ? ' selected' : '') + '>' + c.name + '</option>';
+          }).join('') + '</select></div>' +
+          '<button type="button" class="btn btn-secondary" data-action="save-settings">変更する</button>' +
+          '<p class="note">変えられるのは幹事だけで、最初の1票が入る前までです。</p></div>');
+      }
+    }
+    if (isOrganizer() && !closed && hasVote) {
+      h.push('<p class="note locked">' + ICON_LOCK + '最初の1票が入ったため、締切と、票がないときの店は変更できません。</p>');
+    }
+    if (!closed) {
+      h.push('<p class="note">票が入らなかったら：' + candName(state.fallback) + '（幹事が決めた店）</p>');
+    }
+    h.push('</div>');
+
+    // メンバーの投票状況
+    h.push('<ul class="members" aria-label="メンバーの投票状況">');
+    MEMBERS.forEach(function (m) {
+      var voted = !!last[m.id];
+      h.push('<li><span class="dot ' + (voted ? 'voted' : 'waiting') + '" aria-hidden="true">' + m.name.slice(0, 1) + '</span>' +
+        '<span class="who">' + (m.id === 'me' ? 'あなた' : m.name) + '</span>' +
+        '<span class="state' + (voted ? ' done' : '') + '">' + (voted ? '投票済み' : (closed ? '投票なし' : '未投票')) + '</span></li>');
+    });
+    h.push('</ul>');
+
+    if (!closed && !myVote) {
+      h.push('<p>行きたい候補の「投票する」を押してください。締切の' + deadline + 'までは、何度でも変更できます。</p>');
+    }
+    if (!closed && myVote) {
+      h.push('<p class="notice">' + ICON_CHECK + '<span><strong>' + candName(myVote) + 'に投票しました（' + fmt(last.me.t) + '）。</strong>締切の' + deadline + 'までは、ほかの候補に変更できます。</span></p>');
+    }
+    h.push('</section>');
+
+    if (closed) {
+      // 結論の帯
+      var reason = tie
+        ? '同じ' + lead.count + '票の' + second.c.name + 'より、先に' + lead.count + '票に届いたのは、' + lead.c.name + '（' + fmt(lead.reached) + '）でした。'
+        : (lead.count > 0
+          ? 'いちばん票が多かったのは、' + lead.c.name + '（' + lead.count + '票）でした。'
+          : '票が入らなかったため、幹事が事前に決めておいた' + lead.c.name + 'に決まりました。');
+      h.push('<section class="result-band" aria-label="決定"><span class="label">今日のランチに決定</span><span class="name">' + lead.c.name + '</span><p>' + reason + '</p></section>');
+
+      // ランキング
+      h.push('<section class="card"><div class="card-head"><h2>ランキング</h2><span>' + deadline + ' 締切時点</span></div>');
+      ranked.forEach(function (st, i) {
+        h.push('<div class="row rank"><span class="rank-no">' + (i + 1) + '<small>位</small></span><div class="rank-body">' +
+          '<span class="name' + (i === 0 ? ' first' : '') + '">' + st.c.name + '</span>' +
+          (st.count ? '<span class="reached"><span class="badge-time">' + fmt(st.reached) + '</span>に' + st.count + '票へ到達</span>' : '') +
+          '</div><span class="big-num">' + st.count + '<small>票</small></span></div>');
+      });
+      h.push('<p class="row note">同票のときは、その票数に先に届いた候補が上位です。変更した票は、変更した時刻から数え直しています。</p></section>');
+    } else {
+      // 候補と投票ボタン
+      h.push('<section class="card"><div class="card-head"><h2>今日のランチ</h2><span>候補3件</span></div>');
+      stats.forEach(function (st) {
+        var mine = myVote === st.c.id;
+        h.push('<div class="cand' + (mine ? ' mine' : '') + '"><div class="cand-top"><div class="cand-name">' +
+          (mine ? '<span class="mine-label">' + ICON_CHECK + 'あなたの投票</span>' : '') +
+          '<span class="name">' + st.c.name + '</span><span class="genre">' + st.c.genre + '</span></div>' +
+          '<div class="cand-count"><span class="big-num">' + st.count + '<small>票</small></span>' +
+          (st.count > 0 && lead.c.id === st.c.id ? '<span class="leader">いま1位</span>' : '') + '</div></div>');
+        if (st.count > 0) {
+          h.push('<div class="voters"><div>' + st.vs.map(function (v) {
+            return '<span class="avatar" title="' + memberLabel(v.id) + '">' + MEMBERS.filter(function (m) { return m.id === v.id; })[0].name.slice(0, 1) + '</span>';
+          }).join('') + '</div><span class="names">' + st.vs.map(function (v) { return plainLabel(v.id); }).join('・') + '</span></div>');
+          h.push('<div class="reached"><span class="badge-time">' + fmt(st.reached) + '</span>に' + st.count + '票へ到達</div>');
+        }
+        if (!myVote) h.push('<button type="button" class="btn btn-primary" data-action="pick" data-id="' + st.c.id + '">' + st.c.name + 'に投票する</button>');
+        else if (!mine) h.push('<button type="button" class="btn btn-secondary" data-action="pick" data-id="' + st.c.id + '">' + st.c.name + 'に変更する</button>');
+        h.push('</div>');
+      });
+      var r;
+      if (lead.count === 0) r = 'まだ票がありません。同票なら、その票数に先に届いた候補が上位になります。';
+      else if (tie) r = 'いまの1位は' + lead.c.name + '。同じ' + lead.count + '票の' + second.c.name + 'より<strong>先に' + lead.count + '票へ到達</strong>（' + fmt(lead.reached) + '）しています。';
+      else r = 'いまの1位は' + lead.c.name + '（' + lead.count + '票）。同票になったら、<strong>先にその票数へ届いた候補</strong>が上位です。';
+      h.push('<p class="reason">' + r + '</p></section>');
+    }
+
+    // 投票ログ
+    var events = closed ? state.events.concat([{ t: state.deadline, type: 'close', to: lead.c.id }]) : state.events;
+    h.push('<section class="card"><div class="card-head"><h2>投票ログ</h2><span>全員に表示</span></div>');
+    if (!events.length) h.push('<p class="row">まだ投票はありません。</p>');
+    h.push('<ol class="log">');
+    events.forEach(function (e) {
+      var text;
+      if (e.type === 'vote') text = '<span><strong>' + memberLabel(e.who) + '</strong>が <strong>' + candName(e.to) + '</strong> に投票</span>';
+      if (e.type === 'change') text = '<span><strong>' + memberLabel(e.who) + '</strong>が ' + candName(e.from) + ' から <strong>' + candName(e.to) + '</strong> に変更</span><span class="sub">この票は' + fmt(e.t) + 'から数え直し</span>';
+      if (e.type === 'deadline') text = '<span>幹事が締切を ' + e.from + ' から <strong>' + e.to + '</strong> に変更</span>';
+      if (e.type === 'fallback') text = '<span>幹事が票がないときの店を ' + candName(e.from) + ' から <strong>' + candName(e.to) + '</strong> に変更</span>';
+      if (e.type === 'close') text = '<span>締切。<strong>' + candName(e.to) + '</strong> に決定</span>';
+      h.push('<li class="row"><span class="badge-time">' + fmt(e.t) + '</span><div class="text">' + text + '</div></li>');
+    });
+    h.push('</ol>');
+    var notVoted = MEMBERS.filter(function (m) { return !last[m.id]; }).map(function (m) { return plainLabel(m.id); });
+    h.push('<p class="row note">' + (notVoted.length ? (closed ? '投票しなかった人：' : 'まだ投票していない人：') + notVoted.join('・') : '全員が投票しました。') + '</p></section>');
+
+    // プロトタイプ操作（本番には出さない）
+    var nv = nextVoter();
+    h.push('<section class="proto" aria-label="プロトタイプ操作"><div><p class="title">プロトタイプ操作</p>' +
+      '<p class="sub">本番の画面には出ません。見本の時刻：いま ' + fmt(state.now) + '</p></div>');
+    h.push('<div class="scenes" role="group" aria-label="場面を切り替える">' + SCENES.map(function (sc) {
+      return '<button type="button" class="btn btn-secondary btn-small" data-action="scene" data-id="' + sc.id + '" aria-pressed="' + (state.scene === sc.id) + '">' + sc.label + '</button>';
+    }).join('') + '</div>');
+    h.push('<button type="button" class="btn btn-secondary btn-small" data-action="next"' + (closed || !nv ? ' disabled' : '') + '>次の人が投票する</button>');
+    h.push('<button type="button" class="btn btn-secondary btn-small" data-action="advance"' + (closed ? ' disabled' : '') + '>締切まで時間を進める</button>');
+    h.push('<button type="button" class="btn btn-secondary btn-small" data-action="reset">最初に戻す</button>');
+    h.push('<p class="sub">' + (closed ? '締切後です。「最初に戻す」で始めからやり直せます。' : (nv ? '次は' + plainLabel(nv.id) + 'が投票します（時刻は1分ずつ進みます）。' : 'あなた以外の全員が投票済みです。')) + '</p></section>');
+
+    h.push('<p class="back"><a href="index.html">ひるメシ投票の紹介ページに戻る</a></p>');
+
+    document.getElementById('app').innerHTML = h.join('');
+  }
+
+  // ボタン操作をまとめて受け取る
+  document.getElementById('app').addEventListener('click', function (ev) {
+    var b = ev.target.closest('button[data-action]');
+    if (!b || b.disabled) return;
+    var a = b.getAttribute('data-action');
+    if (a === 'pick') pick(b.getAttribute('data-id'));
+    if (a === 'next') nextVote();
+    if (a === 'advance') advance();
+    if (a === 'reset') { state = initial(state.scene); render(); }
+    if (a === 'scene') { state = initial(b.getAttribute('data-id')); render(); }
+    if (a === 'toggle-edit') { state.editOpen = !state.editOpen; state.draft = fmt(state.deadline); state.draftFallback = state.fallback; render(); }
+    if (a === 'save-settings') saveSettings();
+  });
+  document.getElementById('app').addEventListener('input', function (ev) {
+    if (ev.target.id === 'deadline-input') state.draft = ev.target.value;
+  });
+  document.getElementById('app').addEventListener('change', function (ev) {
+    if (ev.target.id === 'fallback-select') state.draftFallback = ev.target.value;
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

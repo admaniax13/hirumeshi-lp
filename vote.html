@@ -23,7 +23,7 @@ main { max-width: 480px; margin: 0 auto; padding: 24px 20px 40px; display: flex;
 .editor { display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: var(--radius-m); border: 1px solid var(--color-line); background: var(--color-white); }
 .editor label { font-size: 14px; font-weight: 700; color: var(--color-note); }
 .editor-row { display: flex; gap: 10px; align-items: center; }
-.editor-row input { flex: 1; min-width: 0; height: 52px; padding: 0 14px; border-radius: var(--radius-m); border: 1.5px solid var(--color-note); background: var(--color-white); color: var(--color-heading); font-size: 18px; font-weight: 700; }
+.editor-row input, .editor-row select { flex: 1; min-width: 0; height: 52px; padding: 0 14px; border-radius: var(--radius-m); border: 1.5px solid var(--color-note); background: var(--color-white); color: var(--color-heading); font-size: 18px; font-weight: 700; }
 .editor-row .btn { width: auto; flex-shrink: 0; }
 .locked, .notice { display: flex; gap: 6px; align-items: flex-start; }
 .notice strong { color: var(--color-strong); }
@@ -110,6 +110,7 @@ main { max-width: 480px; margin: 0 auto; padding: 24px 20px 40px; display: flex;
   // 1. 締切時点で票がいちばん多い候補に決定
   // 2. 同票なら、その票数に先に到達した候補が上位
   // 3. 到達時刻は「今有効な票」だけで数える。変更した票は変更した時刻から数え直す
+  // 4. 1票も入らなかったら、幹事が事前に決めた店（fallback）に決定
   function initial(scene) {
     var base = [
       { t: 692, type: 'vote', who: 'suzuki', to: 'sakura' },
@@ -118,7 +119,8 @@ main { max-width: 480px; margin: 0 auto; padding: 24px 20px 40px; display: flex;
       { t: 701, type: 'change', who: 'tanaka', from: 'hinata', to: 'sakura' }
     ];
     var mine = { t: 708, type: 'vote', who: 'me', to: 'tsubame' };
-    var s = { scene: scene, events: base, now: 707, deadline: 715, draft: '11:55', closed: false, editOpen: false };
+    // fallback: 1票も入らなかったときに決まる店（幹事が事前に決める）
+    var s = { scene: scene, events: base, now: 707, deadline: 715, draft: '11:55', fallback: 'sakura', draftFallback: 'sakura', closed: false, editOpen: false };
     if (scene === 'organizer') { s.events = []; s.now = 680; }
     if (scene === 'after') { s.events = base.concat([mine]); s.now = 708; }
     if (scene === 'closed') { s.events = base.concat([mine]); s.now = 715; s.closed = true; }
@@ -162,7 +164,9 @@ main { max-width: 480px; margin: 0 auto; padding: 24px 20px 40px; display: flex;
       return { c: c, i: i, vs: vs, count: vs.length, reached: vs.length ? vs[vs.length - 1].t : null };
     });
     var ranked = stats.slice().sort(function (a, b) {
-      return (b.count - a.count) || ((a.reached == null ? 9999 : a.reached) - (b.reached == null ? 9999 : b.reached)) || (a.i - b.i);
+      return (b.count - a.count) || ((a.reached == null ? 9999 : a.reached) - (b.reached == null ? 9999 : b.reached)) ||
+        // 全員0票のときは、幹事が決めた店を1位にする
+        ((b.c.id === state.fallback) - (a.c.id === state.fallback)) || (a.i - b.i);
     });
     return { last: last, stats: stats, ranked: ranked };
   }
@@ -202,12 +206,21 @@ main { max-width: 480px; margin: 0 auto; padding: 24px 20px 40px; display: flex;
     state.editOpen = false;
     render();
   }
-  function saveDeadline() {
+  // 締切と「票が入らなかったときの店」をまとめて保存する（最初の1票の前だけ）
+  function saveSettings() {
     var hasVote = state.events.some(function (e) { return e.type === 'vote'; });
+    if (hasVote) return;
     var v = parse(state.draft);
-    if (hasVote || v === null || v <= state.now || v === state.deadline) return;
-    state.events = state.events.concat([{ t: state.now, type: 'deadline', from: fmt(state.deadline), to: fmt(v) }]);
-    state.deadline = v;
+    var added = [];
+    if (v !== null && v > state.now && v !== state.deadline) {
+      added.push({ t: state.now, type: 'deadline', from: fmt(state.deadline), to: fmt(v) });
+      state.deadline = v;
+    }
+    if (state.draftFallback !== state.fallback) {
+      added.push({ t: state.now, type: 'fallback', from: state.fallback, to: state.draftFallback });
+      state.fallback = state.draftFallback;
+    }
+    state.events = state.events.concat(added);
     state.editOpen = false;
     render();
   }
@@ -237,16 +250,23 @@ main { max-width: 480px; margin: 0 auto; padding: 24px 20px 40px; display: flex;
     h.push('<div><div class="deadline"><span class="deadline-label">' + (closed ? '締切済み' : '締切') + '</span><span class="deadline-time">' + deadline + '</span></div>');
     h.push('<div class="status"><span class="remain">' + ICON_CLOCK + (closed ? '締切済み' : 'あと' + (state.deadline - state.now) + '分') + '</span><span class="count">投票 ' + Object.keys(last).length + '/5人</span></div>');
     if (isOrganizer() && !closed && !hasVote) {
-      h.push('<button type="button" class="text-link" data-action="toggle-edit" aria-expanded="' + state.editOpen + '" aria-controls="deadline-editor">' + (state.editOpen ? '閉じる' : '締切を変更') + '</button>');
+      h.push('<button type="button" class="text-link" data-action="toggle-edit" aria-expanded="' + state.editOpen + '" aria-controls="deadline-editor">' + (state.editOpen ? '閉じる' : '締切と、票がないときの店を変更') + '</button>');
       if (state.editOpen) {
-        h.push('<div class="editor" id="deadline-editor"><label for="deadline-input">新しい締切</label>' +
-          '<div class="editor-row"><input id="deadline-input" type="time" value="' + state.draft + '">' +
-          '<button type="button" class="btn btn-secondary" data-action="save-deadline">変更する</button></div>' +
-          '<p class="note">締切を変えられるのは幹事だけで、最初の1票が入る前までです。</p></div>');
+        h.push('<div class="editor" id="deadline-editor"><label for="deadline-input">締切</label>' +
+          '<div class="editor-row"><input id="deadline-input" type="time" value="' + state.draft + '"></div>' +
+          '<label for="fallback-select">票が入らなかったときの店</label>' +
+          '<div class="editor-row"><select id="fallback-select">' + CANDS.map(function (c) {
+            return '<option value="' + c.id + '"' + (state.draftFallback === c.id ? ' selected' : '') + '>' + c.name + '</option>';
+          }).join('') + '</select></div>' +
+          '<button type="button" class="btn btn-secondary" data-action="save-settings">変更する</button>' +
+          '<p class="note">変えられるのは幹事だけで、最初の1票が入る前までです。</p></div>');
       }
     }
     if (isOrganizer() && !closed && hasVote) {
-      h.push('<p class="note locked">' + ICON_LOCK + '最初の1票が入ったため、締切は変更できません。</p>');
+      h.push('<p class="note locked">' + ICON_LOCK + '最初の1票が入ったため、締切と、票がないときの店は変更できません。</p>');
+    }
+    if (!closed) {
+      h.push('<p class="note">票が入らなかったら：' + candName(state.fallback) + '（幹事が決めた店）</p>');
     }
     h.push('</div>');
 
@@ -274,7 +294,7 @@ main { max-width: 480px; margin: 0 auto; padding: 24px 20px 40px; display: flex;
         ? '同じ' + lead.count + '票の' + second.c.name + 'より、先に' + lead.count + '票に届いたのは、' + lead.c.name + '（' + fmt(lead.reached) + '）でした。'
         : (lead.count > 0
           ? 'いちばん票が多かったのは、' + lead.c.name + '（' + lead.count + '票）でした。'
-          : '票が入らなかったため、候補の1番目の' + lead.c.name + 'に決まりました。');
+          : '票が入らなかったため、幹事が事前に決めておいた' + lead.c.name + 'に決まりました。');
       h.push('<section class="result-band" aria-label="決定"><span class="label">今日のランチに決定</span><span class="name">' + lead.c.name + '</span><p>' + reason + '</p></section>');
 
       // ランキング
@@ -323,6 +343,7 @@ main { max-width: 480px; margin: 0 auto; padding: 24px 20px 40px; display: flex;
       if (e.type === 'vote') text = '<span><strong>' + memberLabel(e.who) + '</strong>が <strong>' + candName(e.to) + '</strong> に投票</span>';
       if (e.type === 'change') text = '<span><strong>' + memberLabel(e.who) + '</strong>が ' + candName(e.from) + ' から <strong>' + candName(e.to) + '</strong> に変更</span><span class="sub">この票は' + fmt(e.t) + 'から数え直し</span>';
       if (e.type === 'deadline') text = '<span>幹事が締切を ' + e.from + ' から <strong>' + e.to + '</strong> に変更</span>';
+      if (e.type === 'fallback') text = '<span>幹事が票がないときの店を ' + candName(e.from) + ' から <strong>' + candName(e.to) + '</strong> に変更</span>';
       if (e.type === 'close') text = '<span>締切。<strong>' + candName(e.to) + '</strong> に決定</span>';
       h.push('<li class="row"><span class="badge-time">' + fmt(e.t) + '</span><div class="text">' + text + '</div></li>');
     });
@@ -357,11 +378,14 @@ main { max-width: 480px; margin: 0 auto; padding: 24px 20px 40px; display: flex;
     if (a === 'advance') advance();
     if (a === 'reset') { state = initial(state.scene); render(); }
     if (a === 'scene') { state = initial(b.getAttribute('data-id')); render(); }
-    if (a === 'toggle-edit') { state.editOpen = !state.editOpen; state.draft = fmt(state.deadline); render(); }
-    if (a === 'save-deadline') saveDeadline();
+    if (a === 'toggle-edit') { state.editOpen = !state.editOpen; state.draft = fmt(state.deadline); state.draftFallback = state.fallback; render(); }
+    if (a === 'save-settings') saveSettings();
   });
   document.getElementById('app').addEventListener('input', function (ev) {
     if (ev.target.id === 'deadline-input') state.draft = ev.target.value;
+  });
+  document.getElementById('app').addEventListener('change', function (ev) {
+    if (ev.target.id === 'fallback-select') state.draftFallback = ev.target.value;
   });
 
   render();
